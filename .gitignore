@@ -1,1 +1,81 @@
-.idea
+# Root .gitignore
+
+# OS / editor
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+*.swp
+*~
+*.orig
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.iml
+*.ipr
+*.iws
+
+# .NET build outputs
+[Bb]in/
+[Oo]bj/
+artifacts/
+out/
+publish/
+output/
+dist/
+
+# NuGet
+*.nupkg
+*.snupkg
+*.symbols.nupkg
+packages/
+.nuget/
+project.lock.json
+project.assets.json
+*.runtimeconfig.dev.json
+
+# Tests / coverage
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+coverage*.xml
+BenchmarkDotNet.Artifacts/
+
+# Debug / symbols / profiling
+*.pdb
+*.mdb
+*.psess
+*.vsp
+*.vspx
+
+# Logs / temp / caches
+*.log
+*.tmp
+*.temp
+*.cache
+
+# Docs build output
+docs/_site/
+docs/api/
+docs/.cache/
+docfx/_site/
+docfx/api/
+site/
+_book/
+
+# Secrets / local config
+secrets.json
+*.usersecrets
+*.secrets.json
+local.settings.json
+
+# Other tooling
+*.dotCover
+*.vsix
