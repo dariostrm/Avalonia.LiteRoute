@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 
 namespace Mvvm.NestedNav;
 
-public interface INavigator : IAsyncDisposable
+public interface INavigator : IDisposable
 {
     IObservable<IImmutableStack<Screen>> Stack { get; }
     IImmutableStack<Screen> StackValue { get; }

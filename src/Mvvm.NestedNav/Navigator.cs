@@ -136,21 +136,11 @@ public class Navigator : INavigator
             subscription.Dispose();
         }
     }
-
-    public async ValueTask DisposeAsync()
+    
+    public void Dispose()
     {
         _currentViewModelLoadingCts?.Cancel();
         _currentViewModelLoadingCts?.Dispose();
-        await CastAndDispose(_disposables);
-
-        return;
-
-        static async ValueTask CastAndDispose(IDisposable resource)
-        {
-            if (resource is IAsyncDisposable resourceAsyncDisposable)
-                await resourceAsyncDisposable.DisposeAsync();
-            else
-                resource.Dispose();
-        }
+        _disposables.Dispose();
     }
 }
