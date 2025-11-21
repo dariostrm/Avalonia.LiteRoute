@@ -10,8 +10,8 @@ public class Navigator : INavigator
 {
     private CancellationTokenSource? _currentViewModelLoadingCts;
     
-    private CompositeDisposable _disposables = new();
-    private IViewModelFactory _viewModelFactory;
+    private readonly CompositeDisposable _disposables = new();
+    private readonly IViewModelFactory _viewModelFactory;
     
     private readonly BehaviorSubject<IImmutableStack<Screen>> _stackSubject;
     private readonly BehaviorSubject<IViewModel?> _currentViewModelSubject = new(null);

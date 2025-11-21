@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav", "src\Mvvm.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav.Avalonia", "src\Mvvm.NestedNav.Avalonia\Mvvm.NestedNav.Avalonia.csproj", "{C4F1BB12-7075-413A-B903-70298B877D16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav.Avalonia.Samples", "src\Mvvm.NestedNav.Avalonia.Samples\Mvvm.NestedNav.Avalonia.Samples.csproj", "{D887CAAC-45BE-4CFE-AC34-DB371A9A9E32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav.Avalonia.Samples", "samples\Mvvm.NestedNav.Avalonia.Samples\Mvvm.NestedNav.Avalonia.Samples.csproj", "{D887CAAC-45BE-4CFE-AC34-DB371A9A9E32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

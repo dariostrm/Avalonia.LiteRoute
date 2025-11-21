@@ -27,6 +27,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\Mvvm.NestedNav.Avalonia\Mvvm.NestedNav.Avalonia.csproj" />
+      <ProjectReference Include="..\..\src\Mvvm.NestedNav\Mvvm.NestedNav.csproj" />
       <ProjectReference Include="..\Mvvm.NestedNav.Avalonia\Mvvm.NestedNav.Avalonia.csproj" />
       <ProjectReference Include="..\Mvvm.NestedNav\Mvvm.NestedNav.csproj" />
     </ItemGroup>
