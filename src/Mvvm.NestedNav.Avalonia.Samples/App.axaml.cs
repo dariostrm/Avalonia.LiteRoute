@@ -26,6 +26,8 @@ public partial class App : Application
         var factory = new ServiceProviderViewModelFactory(serviceProvider);
         factory.Register<HomeScreen, HomeViewModel>();
         factory.Register<DetailsScreen, DetailsViewModel>();
+        factory.Register<ProfileScreen, ProfileViewModel>();
+        factory.Register<SettingsScreen, SettingsViewModel>();
         ViewModelFactory.RegisterSingleton(factory);
         
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

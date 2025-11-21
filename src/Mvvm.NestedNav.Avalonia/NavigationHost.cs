@@ -2,6 +2,7 @@
 using System.Reactive.Disposables.Fluent;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.Threading;
 
 namespace Mvvm.NestedNav.Avalonia;
@@ -16,8 +17,16 @@ public class NavigationHost : ContentControl, INavigationHost
     public static readonly StyledProperty<Screen> InitialScreenProperty = AvaloniaProperty.Register<NavigationHost, Screen>(
         nameof(InitialScreen));
 
-    public static readonly StyledProperty<IViewModel?> CurrentViewModelProperty = AvaloniaProperty.Register<NavigationHost, IViewModel?>(
-        nameof(CurrentViewModel));
+    private IViewModel? _currentViewModel;
+
+    public static readonly DirectProperty<NavigationHost, IViewModel?> CurrentViewModelProperty = AvaloniaProperty.RegisterDirect<NavigationHost, IViewModel?>(
+        nameof(CurrentViewModel), o => o.CurrentViewModel, (o, v) => o.CurrentViewModel = v);
+
+    public IViewModel? CurrentViewModel
+    {
+        get => _currentViewModel;
+        set => SetAndRaise(CurrentViewModelProperty, ref _currentViewModel, value);
+    }
 
     public NavigationHost()
     {
@@ -30,9 +39,9 @@ public class NavigationHost : ContentControl, INavigationHost
         InitialScreen = initialScreen;
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnAttachedToLogicalTree(e);
         this.GetObservable(CurrentViewModelProperty)
             .Subscribe(OnCurrentViewModelChanged)
             .DisposeWith(_disposables);
@@ -44,6 +53,10 @@ public class NavigationHost : ContentControl, INavigationHost
 
     private void OnCurrentViewModelChanged(IViewModel? vm)
     {
+        if (vm == null)
+        {
+            Console.WriteLine("Warning: CurrentViewModel is null.");
+        }
         Dispatcher.UIThread.Post(() => Content = vm);
     }
 
@@ -52,21 +65,16 @@ public class NavigationHost : ContentControl, INavigationHost
         CurrentViewModel = vm;
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         _disposables.Dispose();
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
     }
     
     public INavigator Navigator
     {
         get => GetValue(NavigatorProperty);
         set => SetValue(NavigatorProperty, value);
-    }
-    public IViewModel? CurrentViewModel
-    {
-        get => GetValue(CurrentViewModelProperty);
-        private set => SetValue(CurrentViewModelProperty, value);
     }
     public Screen InitialScreen
     {

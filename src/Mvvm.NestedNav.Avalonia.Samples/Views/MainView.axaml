@@ -7,10 +7,28 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Mvvm.NestedNav.Avalonia.Samples.Views.MainView">
     
-    <avalonia:NavigationHost>
-        <avalonia:NavigationHost.InitialScreen>
-            <screens:HomeScreen/>
-        </avalonia:NavigationHost.InitialScreen>
-    </avalonia:NavigationHost>
+    <TabControl Margin="5">
+        <TabItem Header="Home">
+            <avalonia:NavigationHost>
+                <avalonia:NavigationHost.InitialScreen>
+                    <screens:HomeScreen/>
+                </avalonia:NavigationHost.InitialScreen>
+            </avalonia:NavigationHost>
+        </TabItem>
+        <TabItem Header="Settings">
+            <avalonia:NavigationHost>
+                <avalonia:NavigationHost.InitialScreen>
+                    <screens:SettingsScreen/>
+                </avalonia:NavigationHost.InitialScreen>
+            </avalonia:NavigationHost>
+        </TabItem>
+        <TabItem Header="Profile">
+            <avalonia:NavigationHost>
+                <avalonia:NavigationHost.InitialScreen>
+                    <screens:ProfileScreen/>
+                </avalonia:NavigationHost.InitialScreen>
+            </avalonia:NavigationHost>
+        </TabItem>
+    </TabControl>
     
 </UserControl>
