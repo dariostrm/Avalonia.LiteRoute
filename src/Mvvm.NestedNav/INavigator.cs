@@ -5,12 +5,8 @@ namespace Mvvm.NestedNav;
 public interface INavigator : IDisposable
 {
     // Navigation Stack
-    IObservable<IImmutableStack<Screen>> Stack { get; }
-    IImmutableStack<Screen> StackValue { get; }
-    IObservable<Screen> CurrentScreen { get; }
-    Screen CurrentScreenValue { get; }
-    IObservable<IScreenViewModel> CurrentViewModel { get; }
-    IScreenViewModel CurrentViewModelValue { get; }
+    IObservable<INavBackStack> Stack { get; }
+    INavBackStack StackValue { get; }
     
     INavigator? ParentNavigator { get; }
     bool CanGoBack { get; }
