@@ -12,9 +12,11 @@ public class Navigator : INavigator
     
     private readonly CompositeDisposable _disposables = new();
     private readonly IViewModelFactory _viewModelFactory;
-    
-    private readonly BehaviorSubject<IImmutableStack<Screen>> _stackSubject;
+
+    private readonly BehaviorSubject<IImmutableStack<Screen>> _stackSubject = new(ImmutableStack<Screen>.Empty);
     private readonly BehaviorSubject<IScreenViewModel?> _currentViewModelSubject = new(null);
+    
+    private IImmutableStack<(Guid Id, Screen Screen)> _navigationHistory = ImmutableStack<(Guid, Screen)>.Empty;
     
     public IObservable<IImmutableStack<Screen>> Stack => _stackSubject.AsObservable();
     public IImmutableStack<Screen> StackValue => _stackSubject.Value;
@@ -43,8 +45,7 @@ public class Navigator : INavigator
     {
         _viewModelFactory = viewModelFactory;
         ParentNavigator = parentNavigator;
-        var initialStack = ImmutableStack<Screen>.Empty.Push(initialScreen);
-        _stackSubject = new BehaviorSubject<IImmutableStack<Screen>>(initialStack);
+        Navigate(initialScreen);
         CurrentScreen
             .Subscribe(OnNewScreen)
             .DisposeWith(_disposables);
@@ -149,7 +150,7 @@ public class Navigator : INavigator
         var oldViewModel = CurrentViewModelValue;
         _navigatingBackSubject.OnNext(new NavigatingBackEventArgs(oldScreen, oldViewModel));
         await SetStackAsync(StackValue.Pop());
-        _navigatedBackSubject.OnNext(oldScreen);
+        _navigatedBackSubject.OnNext(oldScreen); 
     }
 
     public void Dispose()
