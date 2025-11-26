@@ -10,6 +10,7 @@ namespace Mvvm.NestedNav.Avalonia;
 
 public class NavigationHost : ContentControl
 {
+    private IDisposable _currentViewModelSubscription = Disposable.Empty;
     private IDisposable _navigatorSubscription = Disposable.Empty;
     private CompositeDisposable _disposables = new();
 
@@ -21,12 +22,12 @@ public class NavigationHost : ContentControl
 
     private IScreenViewModel? _currentViewModel;
 
-    public static readonly DirectProperty<NavigationHost, IScreenViewModel> CurrentViewModelProperty = AvaloniaProperty.RegisterDirect<NavigationHost, IScreenViewModel>(
+    public static readonly DirectProperty<NavigationHost, IScreenViewModel?> CurrentViewModelProperty = AvaloniaProperty.RegisterDirect<NavigationHost, IScreenViewModel?>(
         nameof(CurrentViewModel), o => o.CurrentViewModel, (o, v) => o.CurrentViewModel = v);
 
-    public IScreenViewModel CurrentViewModel
+    public IScreenViewModel? CurrentViewModel
     {
-        get => _currentViewModel ?? throw new InvalidOperationException("Current ViewModel has not been loaded yet.");
+        get => _currentViewModel;
         set => SetAndRaise(CurrentViewModelProperty, ref _currentViewModel!, value);
     }
 
@@ -45,14 +46,13 @@ public class NavigationHost : ContentControl
     {
         base.OnAttachedToLogicalTree(e);
         _disposables = new CompositeDisposable();
-        this.GetObservable(CurrentViewModelProperty)
-            .Subscribe(OnCurrentViewModelChanged)
-            .DisposeWith(_disposables);
+        _currentViewModelSubscription = this.GetObservable(CurrentViewModelProperty)
+            .Subscribe(OnCurrentViewModelChanged);
         Navigator = new Navigator(ViewModelResolver.Instance, InitialScreen, parentNavigator: null);
         _navigatorSubscription = Navigator.BackStack.Subscribe(OnBackStackChanged);
     }
 
-    private void OnCurrentViewModelChanged(IScreenViewModel vm)
+    private void OnCurrentViewModelChanged(IScreenViewModel? vm)
     {
         Dispatcher.UIThread.Post(() => Content = vm);
     }
@@ -80,6 +80,7 @@ public class NavigationHost : ContentControl
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         _navigatorSubscription.Dispose();
+        _currentViewModelSubscription.Dispose();
         _disposables.Dispose();
         base.OnDetachedFromLogicalTree(e);
     }

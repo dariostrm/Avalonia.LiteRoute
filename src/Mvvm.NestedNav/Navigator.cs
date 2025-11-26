@@ -48,15 +48,30 @@ public class Navigator : INavigator
     private void SetBackStack(NavBackStack newBackStack)
     {
         var oldEntry = BackStackValue.CurrentEntry;
+        oldEntry?.ViewModel.OnNavigatingFrom();
         var newEntry = newBackStack.CurrentEntry;
+        CheckForClosingViewModels(BackStackValue, newBackStack);
         _navigatingSubject.OnNext(new NavigatingEventArgs(oldEntry?.Screen, oldEntry?.ViewModel, newEntry?.Screen));
         _stackSubject.OnNext(newBackStack);
         if (newEntry == null)
             return;
         LoadNewViewModel(newEntry.Screen, newEntry.ViewModel, onLoaded: () =>
         {
+            oldEntry?.ViewModel.OnNavigatedFrom();
+            newEntry.ViewModel.OnNavigatedTo();
             _navigatedSubject.OnNext(new NavigatedEventArgs(oldEntry?.Screen, newEntry.Screen, newEntry.ViewModel));
         });
+    }
+    
+    private void CheckForClosingViewModels(NavBackStack oldStack, NavBackStack newStack)
+    {
+        var oldEntries = oldStack.Entries;
+        var newEntries = newStack.Entries;
+        var entriesToClose = oldEntries.Except(newEntries).ToList();
+        foreach (var entry in entriesToClose)
+        {
+            entry.ViewModel.OnClosing();
+        }
     }
 
     public void Navigate(Screen screen)
