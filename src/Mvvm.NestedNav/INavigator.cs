@@ -12,7 +12,7 @@ public interface INavigator : IDisposable
     bool CanGoBack { get; }
     
     // Navigation Methods
-    void SetBackStack(IEnumerable<Screen> newBackStack);
+    void OverrideBackStack(IEnumerable<Screen> screens);
     void Navigate(Screen screen);
     void GoBack();
     void GoBackOrClear();
@@ -26,5 +26,5 @@ public interface INavigator : IDisposable
     IObservable<NavigatedEventArgs> Navigated { get; }
 }
 
-public record NavigatingEventArgs(Screen OldScreen, IScreenViewModel OldViewModel, Screen NewScreen);
-public record NavigatedEventArgs(Screen OldScreen, Screen NewScreen, IScreenViewModel NewViewModel);
+public record NavigatingEventArgs(Screen? OldScreen, IScreenViewModel? OldViewModel, Screen? NewScreen);
+public record NavigatedEventArgs(Screen? OldScreen, Screen? NewScreen, IScreenViewModel? NewViewModel);

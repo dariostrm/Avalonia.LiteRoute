@@ -14,21 +14,22 @@ public record NavBackStack(IImmutableList<NavEntry> Entries)
     public static NavBackStack Empty => new([]);
 }
 
-public static class ImmutableListNavBackStackExtensions
+public static class NavBackStackExtensions
 {
-    public static IImmutableList<T> RemoveLast<T>(this IImmutableList<T> list)
+    public static NavBackStack Push(this NavBackStack stack, NavEntry entry)
     {
-        if (list.Count == 0)
-            throw new InvalidOperationException("Cannot remove last element from an empty list.");
-        
-        return list.RemoveAt(list.Count - 1);
+        return new NavBackStack(stack.Entries.Add(entry));
     }
     
-    public static IImmutableList<T> RemoveLastOrEmpty<T>(this IImmutableList<T> list)
+    public static NavBackStack TryPop(this NavBackStack stack, out NavEntry? poppedEntry)
     {
-        if (list.Count == 0)
-            return list;
-        
-        return list.RemoveAt(list.Count - 1);
+        if (stack.IsEmpty)
+        {
+            poppedEntry = null;
+            return stack;
+        }
+
+        poppedEntry = stack.CurrentEntry;
+        return new NavBackStack(stack.Entries.RemoveAt(stack.Count - 1));
     }
 }
