@@ -1,7 +1,7 @@
 using System.Globalization;
 using Avalonia.Data.Converters;
 
-namespace NestedNav.Avalonia.Dialogs;
+namespace Mvvm.NestedNav.Dialogs.Avalonia;
 
 public class BoolConverters
 {

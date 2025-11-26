@@ -23,7 +23,7 @@ public partial class App : Application
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddSingleton<HomeViewModel>();
         var serviceProvider = serviceCollection.BuildServiceProvider();
-        var factory = new ServiceProviderViewModelFactory(serviceProvider);
+        var factory = new ServiceProviderViewModelResolver(serviceProvider);
         factory.Register<HomeScreen, HomeViewModel>();
         factory.Register<DetailsScreen, DetailsViewModel>();
         factory.Register<ProfileScreen, ProfileViewModel>();

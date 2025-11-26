@@ -10,9 +10,8 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.VisualTree;
-using NestedNav.Dialogs;
 
-namespace NestedNav.Avalonia.Dialogs;
+namespace Mvvm.NestedNav.Dialogs.Avalonia;
 
 public class Dialog : TemplatedControl
 {

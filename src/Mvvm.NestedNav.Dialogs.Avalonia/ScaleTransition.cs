@@ -3,9 +3,8 @@ using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Styling;
-using Avalonia.Threading;
 
-namespace NestedNav.Avalonia.Dialogs;
+namespace Mvvm.NestedNav.Dialogs.Avalonia;
 
 public class ScaleTransition : IPageTransition
 {

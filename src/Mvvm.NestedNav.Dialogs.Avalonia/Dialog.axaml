@@ -1,21 +1,21 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="using:NestedNav.Avalonia.Dialogs"
-        xmlns:dialogs="clr-namespace:NestedNav.Dialogs;assembly=NestedNav.Dialogs">
+        xmlns:avalonia="clr-namespace:Mvvm.NestedNav.Dialogs.Avalonia"
+        xmlns:dialogs1="clr-namespace:Mvvm.NestedNav.Dialogs;assembly=Mvvm.NestedNav.Dialogs">
     <Design.PreviewWith>
         <Border Padding="20">
-            <controls:Dialog Title="test">
-                <controls:Dialog.DataContext>
-                    <dialogs:DialogViewModel/>
-                </controls:Dialog.DataContext>
-                <controls:Dialog.MainContent>
+            <avalonia:Dialog Title="test">
+                <avalonia:Dialog.DataContext>
+                    <dialogs1:DialogViewModel/>
+                </avalonia:Dialog.DataContext>
+                <avalonia:Dialog.MainContent>
                     <TextBlock Text="Teeeest"/>
-                </controls:Dialog.MainContent>
-            </controls:Dialog>
+                </avalonia:Dialog.MainContent>
+            </avalonia:Dialog>
         </Border>
     </Design.PreviewWith>
 
-    <Style Selector=":is(controls|Dialog)">
+    <Style Selector=":is(avalonia|Dialog)">
         <!-- Set Defaults -->
         <Setter Property="Background" Value="Black"></Setter>
         <Setter Property="BorderBrush" Value="Gray"></Setter>

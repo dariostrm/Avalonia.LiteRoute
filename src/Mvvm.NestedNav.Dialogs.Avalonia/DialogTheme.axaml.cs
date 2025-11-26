@@ -1,8 +1,7 @@
 using Avalonia.Markup.Xaml;
-using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
 
-namespace NestedNav.Avalonia.Dialogs;
+namespace Mvvm.NestedNav.Dialogs.Avalonia;
 
 public class DialogTheme : Styles
 {

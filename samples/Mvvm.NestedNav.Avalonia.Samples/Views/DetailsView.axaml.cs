@@ -9,5 +9,6 @@ public partial class DetailsView : UserControl
     public DetailsView()
     {
         InitializeComponent();
+        StackPanel.Atta
     }
 }

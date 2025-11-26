@@ -11,74 +11,88 @@ public class Navigator : INavigator
     private CancellationTokenSource? _currentViewModelLoadingCts;
     
     private readonly CompositeDisposable _disposables = new();
-    private readonly IViewModelFactory _viewModelFactory;
+    private readonly IViewModelResolver _viewModelResolver;
 
-    private readonly BehaviorSubject<IImmutableStack<Screen>> _stackSubject = new(ImmutableStack<Screen>.Empty);
-    private readonly BehaviorSubject<IScreenViewModel?> _currentViewModelSubject = new(null);
+    private readonly BehaviorSubject<NavBackStack> _stackSubject = new(NavBackStack.Empty);
     
-    private IImmutableStack<(Guid Id, Screen Screen)> _navigationHistory = ImmutableStack<(Guid, Screen)>.Empty;
-    
-    public IObservable<IImmutableStack<Screen>> Stack => _stackSubject.AsObservable();
-    public IImmutableStack<Screen> StackValue => _stackSubject.Value;
-        
-    public IObservable<Screen> CurrentScreen => _stackSubject.Select(stack => stack.Peek());
-    public Screen CurrentScreenValue => _stackSubject.Value.Peek();
-
-    public IObservable<IScreenViewModel> CurrentViewModel => _currentViewModelSubject.AsObservable().Where(vm => vm != null)!;
-    public IScreenViewModel CurrentViewModelValue => _currentViewModelSubject.Value 
-                                               ?? throw new InvalidOperationException("The current ViewModel has not been loaded yet.");
+    public IObservable<NavBackStack> BackStack => _stackSubject.AsObservable();
+    public NavBackStack BackStackValue => _stackSubject.Value;
 
     public INavigator? ParentNavigator { get; }
-    public bool CanGoBack => StackValue.Count() > 1;
-    
+    public bool CanGoBack => BackStackValue.Entries.Count() > 1;
+
     private readonly Subject<NavigatingEventArgs> _navigatingSubject = new();
     private readonly Subject<NavigatedEventArgs> _navigatedSubject = new();
-    private readonly Subject<NavigatingBackEventArgs> _navigatingBackSubject = new();
-    private readonly Subject<Screen> _navigatedBackSubject = new();
     
     public IObservable<NavigatingEventArgs> Navigating => _navigatingSubject.AsObservable();
     public IObservable<NavigatedEventArgs> Navigated => _navigatedSubject.AsObservable();
-    public IObservable<NavigatingBackEventArgs> NavigatingBack => _navigatingBackSubject.AsObservable();
-    public IObservable<Screen> NavigatedBack => _navigatedBackSubject.AsObservable();
     
-    public Navigator(Screen initialScreen, IViewModelFactory viewModelFactory, INavigator? parentNavigator = null)
+    public Navigator(IViewModelResolver viewModelResolver, INavigator? parentNavigator = null)
     {
-        _viewModelFactory = viewModelFactory;
+        _viewModelResolver = viewModelResolver;
         ParentNavigator = parentNavigator;
-        Navigate(initialScreen);
-        CurrentScreen
-            .Subscribe(OnNewScreen)
-            .DisposeWith(_disposables);
+    }
+    
+    public void SetBackStack(IEnumerable<Screen> newBackStack)
+    {
+        
     }
 
-    private void OnNewScreen(Screen newScreen)
+    public void Navigate(Screen screen) => SetBackStack(BackStackValue.Screens.Add(screen));
+
+    public void GoBack() => SetBackStack(BackStackValue.Screens.RemoveLastOrEmpty());
+
+    public void GoBackOrClear()
     {
-        _ = LoadNewViewModelAsync(newScreen)
-            .ContinueWith(t     =>       
-            {
-                if (t is { IsFaulted: true, Exception: not null })
-                    Console.WriteLine("Error during LoadNewViewModelAsync: " + t.Exception);
-            });
+        if (CanGoBack)
+            GoBack();
+        else
+            Clear();
+    }
+
+    public void GoBackTo(Screen screen)
+    {
+        var screens = BackStackValue.Screens;
+        var newBackStack = ImmutableList.Create<Screen>();
+        foreach (var s in screens)
+        {
+            newBackStack = newBackStack.Add(s);
+            if (s.Equals(screen))
+                break;
+        }
+        
+        SetBackStack(newBackStack);
+    }
+
+    public void ClearAndSet(Screen screen) => SetBackStack([screen]);
+
+    public void Clear() => SetBackStack([]);
+
+    public void ReplaceCurrent(Screen screen) => SetBackStack(BackStackValue.Screens.RemoveLastOrEmpty().Add(screen));
+    
+    private NavBackStack CreateNavBackStackFromScreens(IEnumerable<Screen> screens)
+    {
+        List<NavEntry> entries = [];
+        foreach (var screen in screens)
+        {
+            var entry = BackStackValue.Entries.FirstOrDefault(e => e.Screen.Equals(screen)) ??
+                        new NavEntry(screen, _viewModelResolver.ResolveViewModel(screen));
+            entries.Add(entry);
+        }
+        return new NavBackStack(entries.ToImmutableList());
     }
     
-    private async Task LoadNewViewModelAsync(Screen screen)
+    private async Task LoadNewViewModelAsync(Screen screen, IScreenViewModel vm)
     {
         var newCts = new CancellationTokenSource();
-
-        // Atomically replace the CTS and cancel+dispose the previous one
-        var previous = Interlocked.Exchange(ref _currentViewModelLoadingCts, newCts);
-        previous?.Cancel();
-        previous?.Dispose();
+        
+        Interlocked.Exchange(ref _currentViewModelLoadingCts, newCts);
         var token = newCts.Token;
         
         try
         {
-            var viewModel = await _viewModelFactory.CreateAndLoadAsync(screen, this, token);
-
-            if (Interlocked.CompareExchange(ref _currentViewModelLoadingCts, null, newCts) == newCts)
-            {
-                _currentViewModelSubject.OnNext(viewModel);
-            }
+            vm.Initialize(this, screen);
+            await vm.LoadAsync(token);
         }
         catch (OperationCanceledException)
         {
@@ -86,77 +100,14 @@ public class Navigator : INavigator
         }
     }
     
-    public async Task SetStackAsync(IImmutableStack<Screen> newStack)
-    {
-        if (newStack == StackValue)
-            return;
-        var tcs = new TaskCompletionSource();
-        var subscription = CurrentViewModel
-            .Skip(1)
-            .Take(1)
-            .Subscribe(_ => tcs.SetResult());
-
-        try
-        {
-            var oldScreen = CurrentScreenValue;
-            _navigatingSubject.OnNext(new NavigatingEventArgs(oldScreen, CurrentViewModelValue, newStack.Peek()));
-            _stackSubject.OnNext(newStack);
-            await tcs.Task;
-            _navigatedSubject.OnNext(new NavigatedEventArgs(oldScreen, CurrentScreenValue, CurrentViewModelValue));
-        }
-        finally
-        {
-            subscription.Dispose();
-        }
-    }
-    
-    public void SetStack(IImmutableStack<Screen> newStack)
-    {
-        _ = SetStackAsync(newStack)
-            .ContinueWith(t =>
-            {
-                if (t is { IsFaulted: true, Exception: not null })
-                    Console.WriteLine("Error during SetStackAsync: " + t.Exception);
-            });
-    }
-
-    public void Navigate(Screen screen)
-    {
-        _ = NavigateAsync(screen)
-            .ContinueWith(t =>
-            {
-                if (t is { IsFaulted: true, Exception: not null })
-                    Console.WriteLine("Error during NavigateAsync: " + t.Exception);
-            });
-    }
-
-    public Task NavigateAsync(Screen screen) => SetStackAsync(StackValue.Push(screen));
-
-    public void GoBack()
-    {
-        _ = GoBackAsync()
-            .ContinueWith(t =>
-            {
-                if (t is { IsFaulted: true, Exception: not null })
-                    Console.WriteLine("Error during GoBackAsync: " + t.Exception);
-            });
-    }
-
-    public async Task GoBackAsync()
-    {
-        if (!CanGoBack) return;
-        
-        var oldScreen = CurrentScreenValue;
-        var oldViewModel = CurrentViewModelValue;
-        _navigatingBackSubject.OnNext(new NavigatingBackEventArgs(oldScreen, oldViewModel));
-        await SetStackAsync(StackValue.Pop());
-        _navigatedBackSubject.OnNext(oldScreen); 
-    }
 
     public void Dispose()
     {
         _currentViewModelLoadingCts?.Cancel();
         _currentViewModelLoadingCts?.Dispose();
         _disposables.Dispose();
+        _stackSubject.Dispose();
+        _navigatingSubject.Dispose();
+        _navigatedSubject.Dispose();
     }
 }

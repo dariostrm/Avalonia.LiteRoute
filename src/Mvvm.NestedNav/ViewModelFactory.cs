@@ -2,16 +2,16 @@ namespace Mvvm.NestedNav;
 
 public class ViewModelFactory
 {
-    private static IViewModelFactory? _instance;
+    private static IViewModelResolver? _instance;
     
-    public static IViewModelFactory Instance
+    public static IViewModelResolver Instance
     {
         get => _instance ?? throw new InvalidOperationException("A ViewModel Factory has not been registered.");
         private set => _instance = value;
     }
     
-    public static void RegisterSingleton(IViewModelFactory factory)
+    public static void RegisterSingleton(IViewModelResolver resolver)
     {
-        _instance = factory;
+        _instance = resolver;
     }
 }

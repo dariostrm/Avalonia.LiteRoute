@@ -3,7 +3,6 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mvvm.NestedNav.Exceptions;
-using NestedNav.Dialogs;
 
 namespace Mvvm.NestedNav.Dialogs;
 
@@ -20,14 +19,22 @@ public partial class DialogViewModel : ScreenViewModel, IDialogViewModel
 
     [ObservableProperty] private string _closeButtonText = "Cancel";
     [ObservableProperty] private bool _isCloseButtonVisible = true;
+    
+    public event EventHandler? Closed;
 
     public DialogViewModel()
     {
         PrimaryCommand = new RelayCommand(Close);
     }
 
-    protected virtual void Close() => Navigator.GoBack();
-    
+    protected virtual void Close()
+    {
+        if (Navigator.CanGoBack)
+            Navigator.GoBack();
+        else
+            Closed?.Invoke(this, EventArgs.Empty);
+    }
+
     [RelayCommand]
     public virtual void RequestClose() => Close();
     

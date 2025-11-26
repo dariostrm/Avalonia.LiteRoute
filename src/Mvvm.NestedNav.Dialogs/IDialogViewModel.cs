@@ -16,11 +16,13 @@ public interface IDialogViewModel : IScreenViewModel
     bool IsCloseButtonVisible { get; }
     ICommand? RequestCloseCommand { get; }
     void RequestClose();
+    
+    event EventHandler? Closed;
 }
 
 public interface IDialogViewModel<TResult> : IDialogViewModel
     where TResult : class
 {
     TResult? Result { get; }
-    ICommand CancelCommand { get; }
+    ICommand CancelCommand { get; } 
 }

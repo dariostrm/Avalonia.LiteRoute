@@ -5,27 +5,26 @@ namespace Mvvm.NestedNav;
 public interface INavigator : IDisposable
 {
     // Navigation Stack
-    IObservable<INavBackStack> Stack { get; }
-    INavBackStack StackValue { get; }
+    IObservable<NavBackStack> BackStack { get; }
+    NavBackStack BackStackValue { get; }
     
     INavigator? ParentNavigator { get; }
     bool CanGoBack { get; }
     
     // Navigation Methods
-    void SetStack(IImmutableStack<Screen> newStack);
-    Task SetStackAsync(IImmutableStack<Screen> newStack);
+    void SetBackStack(IEnumerable<Screen> newBackStack);
     void Navigate(Screen screen);
-    Task NavigateAsync(Screen screen);
     void GoBack();
-    Task GoBackAsync();
+    void GoBackOrClear();
+    void GoBackTo(Screen screen);
+    void ClearAndSet(Screen screen);
+    void Clear();
+    void ReplaceCurrent(Screen screen);
     
     //Hooks
     IObservable<NavigatingEventArgs> Navigating { get; }
     IObservable<NavigatedEventArgs> Navigated { get; }
-    IObservable<NavigatingBackEventArgs> NavigatingBack { get; }
-    IObservable<Screen> NavigatedBack { get; }
 }
 
 public record NavigatingEventArgs(Screen OldScreen, IScreenViewModel OldViewModel, Screen NewScreen);
 public record NavigatedEventArgs(Screen OldScreen, Screen NewScreen, IScreenViewModel NewViewModel);
-public record NavigatingBackEventArgs(Screen RemovingScreen, IScreenViewModel RemovingViewModel);
