@@ -2,10 +2,10 @@ using Mvvm.NestedNav;
 
 namespace Mvvm.NestedNav;
 
-public interface IViewModelResolver
+public interface IViewModelFactory
 {
     IScreenViewModel ResolveViewModel<TScreen>() 
         where TScreen : Screen;
     
-    IScreenViewModel ResolveViewModel(Screen screen);
+    IScreenViewModel CreateViewModel(Screen screen, INavigator navigator);
 }

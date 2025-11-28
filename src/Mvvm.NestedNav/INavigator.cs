@@ -4,7 +4,7 @@ namespace Mvvm.NestedNav;
 
 public interface INavigator
 {
-    IImmutableList<NavEntry> BackStack { get; }
+    IImmutableStack<NavEntry> BackStack { get; }
     
     INavigator? ParentNavigator { get; }
     

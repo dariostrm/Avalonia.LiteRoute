@@ -4,21 +4,17 @@ namespace Mvvm.NestedNav;
 
 public static class NavBackStack
 {
-    public static NavEntry CurrentEntry(this IImmutableList<NavEntry> entries)
+    public static NavEntry CurrentEntry(this IImmutableStack<NavEntry> entries)
     {
-        if (entries.Count == 0)
-        {
-            throw new InvalidOperationException("The navigation back stack is empty.");
-        }
-        return entries[^1];
+        return entries.Peek();
     }
     
-    public static Screen CurrentScreen(this IImmutableList<NavEntry> entries)
+    public static Screen CurrentScreen(this IImmutableStack<NavEntry> entries)
     {
         return entries.CurrentEntry().Screen;
     }
     
-    public static IScreenViewModel CurrentViewModel(this IImmutableList<NavEntry> entries) 
+    public static IScreenViewModel CurrentViewModel(this IImmutableStack<NavEntry> entries) 
     {
         return entries.CurrentEntry().ViewModel;
     }

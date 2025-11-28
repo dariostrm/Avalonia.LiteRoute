@@ -5,33 +5,33 @@ namespace Mvvm.NestedNav;
 
 public class Navigator : INavigator
 {
-    private readonly IViewModelResolver _viewModelResolver;
+    private readonly IViewModelFactory _viewModelFactory;
     
-    public IImmutableList<NavEntry> BackStack { get; private set; }
+    public IImmutableStack<NavEntry> BackStack { get; private set; }
     public INavigator? ParentNavigator { get; }
     
     public event EventHandler<NavigatingEventArgs>? Navigating;
     public event EventHandler<NavigatedEventArgs>? Navigated;
     
-    public Navigator(IViewModelResolver viewModelResolver, Screen initialScreen, INavigator? parentNavigator = null)
+    public Navigator(IViewModelFactory viewModelFactory, Screen initialScreen, INavigator? parentNavigator = null)
     {
-        _viewModelResolver = viewModelResolver;
+        _viewModelFactory = viewModelFactory;
         ParentNavigator = parentNavigator;
         var initialEntry = CreateEntry(initialScreen);
-        BackStack = ImmutableList.Create(initialEntry);
+        BackStack = ImmutableStack.Create(initialEntry);
     }
 
-    public virtual bool CanGoBack() => BackStack.Count > 1;
+    public virtual bool CanGoBack() => BackStack.Count() > 1;
 
     public void OverrideBackStack(IEnumerable<Screen> screens)
     {
         var newBackStack = screens
             .Select(CreateEntry)
-            .Aggregate(ImmutableList<NavEntry>.Empty, (backstack, entry) => backstack.Add(entry));
+            .Aggregate(ImmutableStack<NavEntry>.Empty, (backstack, entry) => backstack.Push(entry));
         SetBackStack(newBackStack);
     }
     
-    private void SetBackStack(IImmutableList<NavEntry> newBackStack)
+    private void SetBackStack(IImmutableStack<NavEntry> newBackStack)
     {
         var oldEntry = BackStack.CurrentEntry();
         var oldScreen = oldEntry.Screen;
@@ -45,7 +45,7 @@ public class Navigator : INavigator
         Navigated?.Invoke(this, new NavigatedEventArgs(oldScreen, newEntry.Screen, newEntry.ViewModel));
     }
     
-    private void CheckForClosingViewModels(IImmutableList<NavEntry> oldStack, IImmutableList<NavEntry> newStack)
+    private void CheckForClosingViewModels(IImmutableStack<NavEntry> oldStack, IImmutableStack<NavEntry> newStack)
     {
         var entriesToClose = oldStack.Except(newStack).ToList();
         foreach (var entry in entriesToClose)
@@ -56,7 +56,7 @@ public class Navigator : INavigator
 
     public void Navigate(Screen screen)
     {
-        var newBackStack = BackStack.Add(CreateEntry(screen));
+        var newBackStack = BackStack.Push(CreateEntry(screen));
         SetBackStack(newBackStack);
     }
 
@@ -64,7 +64,7 @@ public class Navigator : INavigator
     {
         if (!CanGoBack())
             return;
-        var newBackStack = BackStack.RemoveAt(BackStack.Count - 1);
+        var newBackStack = BackStack.Pop();
         SetBackStack(newBackStack);
     }
 
@@ -72,12 +72,12 @@ public class Navigator : INavigator
     {
         if (!BackStack.Any(entry => entry.Screen.Equals(screen)))
             return;
-        var newBackStack = BackStack.ToList();
-        while (!newBackStack.Last().Screen.Equals(screen))
+        var newBackStack = BackStack;
+        while (!newBackStack.CurrentEntry().Screen.Equals(screen))
         {
-            newBackStack.RemoveAt(newBackStack.Count - 1);
+            newBackStack = newBackStack.Pop();
         }
-        SetBackStack(newBackStack.ToImmutableList());
+        SetBackStack(newBackStack);
     }
 
     public void ClearAndSet(Screen screen) => OverrideBackStack([screen]);
@@ -85,15 +85,14 @@ public class Navigator : INavigator
 
     public void ReplaceCurrent(Screen screen)
     {
-        var newBackStack = BackStack.RemoveAt(BackStack.Count - 1);
-        newBackStack = newBackStack.Add(CreateEntry(screen));
+        var newBackStack = BackStack.Pop();
+        newBackStack = newBackStack.Push(CreateEntry(screen));
         SetBackStack(newBackStack);
     }
     
     private NavEntry CreateEntry(Screen screen)
     {
-        var vm = _viewModelResolver.ResolveViewModel(screen);
-        vm.Initialize(this, screen);
+        var vm = _viewModelFactory.CreateViewModel(screen, this);
         return new NavEntry(screen, vm);
     }
 }

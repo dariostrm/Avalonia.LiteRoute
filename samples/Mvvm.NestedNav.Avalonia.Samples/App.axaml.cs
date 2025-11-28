@@ -22,20 +22,29 @@ public partial class App : Application
     {
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddSingleton<HomeViewModel>();
+        serviceCollection.AddSingleton<IViewModelFactory>(sp =>
+        {
+            var factory = new ViewModelFactory(sp);
+            factory.Register<HomeScreen, HomeViewModel>();
+            factory.Register<DetailsScreen, DetailsViewModel>();
+            factory.Register<ProfileScreen, ProfileViewModel>();
+            factory.Register<SettingsScreen, SettingsViewModel>();
+            return factory;
+        });
+        serviceCollection.AddSingleton<MainViewModel>();
         var serviceProvider = serviceCollection.BuildServiceProvider();
-        var factory = new ServiceProviderViewModelResolver(serviceProvider);
-        factory.Register<HomeScreen, HomeViewModel>();
-        factory.Register<DetailsScreen, DetailsViewModel>();
-        factory.Register<ProfileScreen, ProfileViewModel>();
-        factory.Register<SettingsScreen, SettingsViewModel>();
-        ViewModelResolver.RegisterSingleton(factory);
+        
         
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            desktop.MainWindow = new MainWindow();
+            var mainVm = serviceProvider.GetRequiredService<MainViewModel>();
+            desktop.MainWindow = new MainWindow()
+            {
+                DataContext = mainVm,
+            };
         }
 
         base.OnFrameworkInitializationCompleted();

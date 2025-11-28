@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Mvvm.NestedNav;
 
-public class ServiceProviderViewModelResolver(IServiceProvider serviceProvider) : IViewModelResolver
+public class ViewModelFactory(IServiceProvider serviceProvider) : IViewModelFactory
 {
     private readonly Dictionary<Type, Func<IServiceProvider, IScreenViewModel>> _factories = new();
 
@@ -25,12 +25,14 @@ public class ServiceProviderViewModelResolver(IServiceProvider serviceProvider) 
         throw new InvalidOperationException($"No ViewModel registered for Screen type {screenType.FullName}");
     }
     
-    public IScreenViewModel ResolveViewModel(Screen screen)
+    public IScreenViewModel CreateViewModel(Screen screen, INavigator navigator)
     {
         var screenType = screen.GetType();
         if (_factories.TryGetValue(screenType, out var factory))
         {
-            return factory(serviceProvider);
+            var vm = factory(serviceProvider);
+            vm.Initialize(navigator, screen);
+            return vm;
         }
 
         throw new InvalidOperationException($"No ViewModel registered for Screen type {screenType.FullName}");

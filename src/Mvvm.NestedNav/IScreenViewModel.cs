@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace Mvvm.NestedNav;
 
-public interface IScreenViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
+public interface IScreenViewModel
 {
     void Initialize(INavigator navigator, Screen screen);
     

@@ -6,16 +6,17 @@ using Mvvm.NestedNav.Avalonia.Samples.Screens;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
+[ObservableObject]
 public partial class HomeViewModel : ScreenViewModel
 {
     [ObservableProperty] private string _greeting = "Home not yet loaded!";
-    
-    public override async Task LoadAsync(CancellationToken cancellationToken = default)
+
+    public override void Initialize(INavigator navigator, Screen screen)
     {
-        await Task.Delay(2000, cancellationToken); // Simulate some loading time
-        Greeting = "Home loaded!";
+        base.Initialize(navigator, screen);
+        Greeting = "Welcome to home page!";
     }
-    
+
     [RelayCommand]
     private void GoToDetails()
     {

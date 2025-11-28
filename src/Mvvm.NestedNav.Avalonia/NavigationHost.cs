@@ -1,8 +1,6 @@
-﻿using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
 
@@ -10,24 +8,29 @@ namespace Mvvm.NestedNav.Avalonia;
 
 public class NavigationHost : ContentControl
 {
-    private IDisposable _currentViewModelSubscription = Disposable.Empty;
-    private IDisposable _navigatorSubscription = Disposable.Empty;
-    private CompositeDisposable _disposables = new();
-
     public static readonly StyledProperty<INavigator> NavigatorProperty = AvaloniaProperty.Register<NavigationHost, INavigator>(
         nameof(Navigator));
 
-    public static readonly StyledProperty<Screen?> InitialScreenProperty = AvaloniaProperty.Register<NavigationHost, Screen?>(
+    public static readonly StyledProperty<Screen> InitialScreenProperty = AvaloniaProperty.Register<NavigationHost, Screen>(
         nameof(InitialScreen));
+
+    public static readonly StyledProperty<IViewModelFactory> ViewModelFactoryProperty = AvaloniaProperty.Register<NavigationHost, IViewModelFactory>(
+        nameof(ViewModelFactory));
+
+    public IViewModelFactory ViewModelFactory
+    {
+        get => GetValue(ViewModelFactoryProperty);
+        set => SetValue(ViewModelFactoryProperty, value);
+    }
 
     private IScreenViewModel? _currentViewModel;
 
-    public static readonly DirectProperty<NavigationHost, IScreenViewModel?> CurrentViewModelProperty = AvaloniaProperty.RegisterDirect<NavigationHost, IScreenViewModel?>(
+    public static readonly DirectProperty<NavigationHost, IScreenViewModel> CurrentViewModelProperty = AvaloniaProperty.RegisterDirect<NavigationHost, IScreenViewModel>(
         nameof(CurrentViewModel), o => o.CurrentViewModel, (o, v) => o.CurrentViewModel = v);
 
-    public IScreenViewModel? CurrentViewModel
+    public IScreenViewModel CurrentViewModel
     {
-        get => _currentViewModel;
+        get => _currentViewModel ?? throw new InvalidOperationException("NavigationHost not initialized yet.");
         set => SetAndRaise(CurrentViewModelProperty, ref _currentViewModel!, value);
     }
 
@@ -36,61 +39,50 @@ public class NavigationHost : ContentControl
         
     }
 
-    public NavigationHost(Screen initialScreen)
+    public NavigationHost(Screen initialScreen, IViewModelFactory viewModelFactory)
         : this()
     {
         InitialScreen = initialScreen;
+        ViewModelFactory = viewModelFactory;
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    private void SetCurrentViewModel(IScreenViewModel viewModel)
     {
-        base.OnAttachedToLogicalTree(e);
-        _disposables = new CompositeDisposable();
-        _currentViewModelSubscription = this.GetObservable(CurrentViewModelProperty)
-            .Subscribe(OnCurrentViewModelChanged);
-        Navigator = new Navigator(ViewModelResolver.Instance, InitialScreen, parentNavigator: null);
-        _navigatorSubscription = Navigator.BackStack.Subscribe(OnBackStackChanged);
+        CurrentViewModel = viewModel;
+        Dispatcher.UIThread.Post(() => Content = viewModel);
     }
 
-    private void OnCurrentViewModelChanged(IScreenViewModel? vm)
+    protected override void OnInitialized()
     {
-        Dispatcher.UIThread.Post(() => Content = vm);
-    }
-
-    private void OnBackStackChanged(NavBackStack stack)
-    {
-        if (stack.CurrentViewModel is null)
-        {
-            Console.WriteLine("NavigationHost: Current ViewModel is null.");
-            return;
-        }
-
-        _disposables.Clear();
-        stack.CurrentViewModel.LifecycleState
-            .Where(state => state == ViewModelLifecycleState.Active)
-            .Subscribe(OnViewModelLoaded)
-            .DisposeWith(_disposables);
-
-        void OnViewModelLoaded(ViewModelLifecycleState state)
-        {
-            CurrentViewModel = stack.CurrentViewModel;
-        }
+        base.OnInitialized();
+        if (InitialScreen is null)
+            throw new InvalidOperationException("The InitialScreen has not been set on the navigation host.");
+        if (ViewModelFactory is null)
+            throw new InvalidOperationException("The ViewModelFactory has not been set on the navigation host.");
+        Navigator = new Navigator(ViewModelFactory, InitialScreen, parentNavigator: null);
+        SetCurrentViewModel(Navigator.BackStack.CurrentViewModel());
+        Navigator.Navigated += OnNavigated;
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        _navigatorSubscription.Dispose();
-        _currentViewModelSubscription.Dispose();
-        _disposables.Dispose();
+        Navigator.Navigated -= OnNavigated;
         base.OnDetachedFromLogicalTree(e);
     }
+
+    private void OnNavigated(object? sender, NavigatedEventArgs e)
+    {
+        var newViewModel = Navigator.BackStack.CurrentViewModel();
+        SetCurrentViewModel(newViewModel);
+    }
     
+
     public INavigator Navigator
     {
         get => GetValue(NavigatorProperty);
         set => SetValue(NavigatorProperty, value);
     }
-    public Screen? InitialScreen
+    public Screen InitialScreen
     {
         get => GetValue(InitialScreenProperty);
         set => SetValue(InitialScreenProperty, value);
