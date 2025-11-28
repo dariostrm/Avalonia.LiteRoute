@@ -9,12 +9,12 @@ public static class NavBackStack
         return entries.Peek();
     }
     
-    public static Screen CurrentScreen(this IImmutableStack<NavEntry> entries)
+    public static Route CurrentRoute(this IImmutableStack<NavEntry> entries)
     {
-        return entries.CurrentEntry().Screen;
+        return entries.CurrentEntry().Route;
     }
     
-    public static IScreenViewModel CurrentViewModel(this IImmutableStack<NavEntry> entries) 
+    public static IViewModel CurrentViewModel(this IImmutableStack<NavEntry> entries) 
     {
         return entries.CurrentEntry().ViewModel;
     }

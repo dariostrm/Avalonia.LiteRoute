@@ -1,21 +1,18 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mvvm.NestedNav.Avalonia.Samples.Screens;
+using Mvvm.NestedNav.Avalonia.Samples.Routes;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
 [ObservableObject]
-public partial class DetailsViewModel : ScreenViewModel
+public partial class DetailsViewModel : ViewModelBase<DetailsRoute>
 {
     [ObservableProperty] private string _message = "Details not yet loaded!";
 
-    public override void Initialize(INavigator navigator, Screen screen)
+    public override void Initialize(INavigator navigator, DetailsRoute route)
     {
-        base.Initialize(navigator, screen);
-        if (screen is DetailsScreen detailsScreen)
-        {
-            Message = detailsScreen.Message;
-        }
+        base.Initialize(navigator, route);
+        Message = route.Message;
     }
     
     [RelayCommand]

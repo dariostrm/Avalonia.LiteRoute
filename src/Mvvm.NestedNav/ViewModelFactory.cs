@@ -4,37 +4,26 @@ namespace Mvvm.NestedNav;
 
 public class ViewModelFactory(IServiceProvider serviceProvider) : IViewModelFactory
 {
-    private readonly Dictionary<Type, Func<IServiceProvider, IScreenViewModel>> _factories = new();
+    private readonly Dictionary<Type, Func<IServiceProvider, IViewModel>> _factories = new();
 
-    public void Register<TScreen, TViewModel>()
-        where TScreen : Screen
-        where TViewModel : IScreenViewModel
+    public void Register<TRoute, TViewModel>()
+        where TRoute : Route
+        where TViewModel : IViewModel
     {
-        _factories[typeof(TScreen)] = sp => ActivatorUtilities.CreateInstance<TViewModel>(sp);
-    }
-
-
-    public IScreenViewModel ResolveViewModel<TScreen>() where TScreen : Screen
-    {
-        var screenType = typeof(TScreen);
-        if (_factories.TryGetValue(screenType, out var factory))
-        {
-            return factory(serviceProvider);
-        }
-
-        throw new InvalidOperationException($"No ViewModel registered for Screen type {screenType.FullName}");
+        _factories[typeof(TRoute)] = sp => ActivatorUtilities.CreateInstance<TViewModel>(sp);
     }
     
-    public IScreenViewModel CreateViewModel(Screen screen, INavigator navigator)
+    public IViewModel CreateViewModel(Route route, INavigator navigator)
     {
-        var screenType = screen.GetType();
-        if (_factories.TryGetValue(screenType, out var factory))
+        var routeType = route.GetType();
+        if (_factories.TryGetValue(routeType, out var factory))
         {
             var vm = factory(serviceProvider);
-            vm.Initialize(navigator, screen);
+            vm.Initialize(navigator, route);
             return vm;
         }
 
-        throw new InvalidOperationException($"No ViewModel registered for Screen type {screenType.FullName}");
+        throw new InvalidOperationException($"No ViewModel registered for Route type {routeType.FullName}");
     }
+    
 }

@@ -4,8 +4,5 @@ namespace Mvvm.NestedNav;
 
 public interface IViewModelFactory
 {
-    IScreenViewModel ResolveViewModel<TScreen>() 
-        where TScreen : Screen;
-    
-    IScreenViewModel CreateViewModel(Screen screen, INavigator navigator);
+    IViewModel CreateViewModel(Route route, INavigator navigator);
 }

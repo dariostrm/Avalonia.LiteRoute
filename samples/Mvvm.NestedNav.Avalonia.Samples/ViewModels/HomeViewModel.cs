@@ -1,25 +1,23 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mvvm.NestedNav.Avalonia.Samples.Screens;
+using Mvvm.NestedNav.Avalonia.Samples.Routes;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
 [ObservableObject]
-public partial class HomeViewModel : ScreenViewModel
+public partial class HomeViewModel : ViewModelBase<HomeRoute>
 {
     [ObservableProperty] private string _greeting = "Home not yet loaded!";
 
-    public override void Initialize(INavigator navigator, Screen screen)
+    public override void Initialize(INavigator navigator, HomeRoute route)
     {
-        base.Initialize(navigator, screen);
+        base.Initialize(navigator, route);
         Greeting = "Welcome to home page!";
     }
 
     [RelayCommand]
     private void GoToDetails()
     {
-        Navigator.Navigate(new DetailsScreen("Passed from Home!"));
+        Navigator.Navigate(new DetailsRoute("Passed from Home!"));
     }
 }

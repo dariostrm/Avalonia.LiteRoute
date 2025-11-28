@@ -2,7 +2,7 @@ using System.Windows.Input;
 
 namespace Mvvm.NestedNav.Dialogs;
 
-public interface IDialogViewModel : IScreenViewModel
+public interface IDialogViewModel : IViewModel
 {
     string Title { get; }
     

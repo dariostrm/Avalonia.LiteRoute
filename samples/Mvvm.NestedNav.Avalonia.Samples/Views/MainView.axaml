@@ -3,8 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:avalonia="clr-namespace:Mvvm.NestedNav.Avalonia;assembly=Mvvm.NestedNav.Avalonia"
-             xmlns:screens="clr-namespace:Mvvm.NestedNav.Avalonia.Samples.Screens"
              xmlns:viewModels="clr-namespace:Mvvm.NestedNav.Avalonia.Samples.ViewModels"
+             xmlns:routes="clr-namespace:Mvvm.NestedNav.Avalonia.Samples.Routes"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Mvvm.NestedNav.Avalonia.Samples.Views.MainView"
              x:DataType="viewModels:MainViewModel">
@@ -12,23 +12,23 @@
     <TabControl Margin="5">
         <TabItem Header="Home">
             <avalonia:NavigationHost ViewModelFactory="{Binding ViewModelFactory}">
-                <avalonia:NavigationHost.InitialScreen>
-                    <screens:HomeScreen/>
-                </avalonia:NavigationHost.InitialScreen>
+                <avalonia:NavigationHost.InitialRoute>
+                    <routes:HomeRoute/>
+                </avalonia:NavigationHost.InitialRoute>
             </avalonia:NavigationHost>
         </TabItem>
         <TabItem Header="Settings">
             <avalonia:NavigationHost ViewModelFactory="{Binding ViewModelFactory}">
-                <avalonia:NavigationHost.InitialScreen>
-                    <screens:SettingsScreen/>
-                </avalonia:NavigationHost.InitialScreen>
+                <avalonia:NavigationHost.InitialRoute>
+                    <routes:SettingsRoute/>
+                </avalonia:NavigationHost.InitialRoute>
             </avalonia:NavigationHost>
         </TabItem>
         <TabItem Header="Profile">
             <avalonia:NavigationHost ViewModelFactory="{Binding ViewModelFactory}">
-                <avalonia:NavigationHost.InitialScreen>
-                    <screens:ProfileScreen/>
-                </avalonia:NavigationHost.InitialScreen>
+                <avalonia:NavigationHost.InitialRoute>
+                    <routes:ProfileRoute/>
+                </avalonia:NavigationHost.InitialRoute>
             </avalonia:NavigationHost>
         </TabItem>
     </TabControl>

@@ -50,7 +50,7 @@ public class DialogHost : TemplatedControl, IDialogHost
                 .Subscribe(OnDialogLoaded)
                 .DisposeWith(_navigatorSubscriptions);
 
-            void OnDialogLoaded(IScreenViewModel vm)
+            void OnDialogLoaded(IViewModel vm)
             {
                 if (vm is not IDialogViewModel dialogVm)
                     throw new InvalidScreenException(nameof(DialogHost));

@@ -21,10 +21,10 @@ public partial class TextDialogViewModel : DialogViewModel<string>
         SetPrimaryAction(() => RequestClose(Text), canExecute: () => !HasErrors);
     }
 
-    public override void Initialize(INavigator navigator, Screen screen)
+    public override void Initialize(INavigator navigator, Route route)
     {
-        base.Initialize(navigator, screen);
-        if (screen is not TextDialogScreen textDialogRoute)
+        base.Initialize(navigator, route);
+        if (route is not TextDialogScreen textDialogRoute)
             throw new InvalidScreenException(nameof(TextDialogViewModel));
         Text = textDialogRoute.InitialText;
         Placeholder = textDialogRoute.Placeholder ?? string.Empty;

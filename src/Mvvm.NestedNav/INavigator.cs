@@ -10,16 +10,16 @@ public interface INavigator
     
     // Navigation Methods
     bool CanGoBack();
-    void OverrideBackStack(IEnumerable<Screen> screens);
-    void Navigate(Screen screen);
+    void OverrideBackStack(IEnumerable<Route> routes);
+    void Navigate(Route route);
     void GoBack();
-    void GoBackTo(Screen screen);
-    void ClearAndSet(Screen screen);
-    void ReplaceCurrent(Screen screen);
+    void GoBackTo(Route route);
+    void ClearAndSet(Route route);
+    void ReplaceCurrent(Route route);
     
     event EventHandler<NavigatingEventArgs>? Navigating;
     event EventHandler<NavigatedEventArgs>? Navigated;
 }
 
-public record NavigatingEventArgs(Screen OldScreen, IScreenViewModel OldViewModel, Screen NewScreen);
-public record NavigatedEventArgs(Screen OldScreen, Screen NewScreen, IScreenViewModel NewViewModel);
+public record NavigatingEventArgs(Route OldRoute, IViewModel OldViewModel, Route NewRoute);
+public record NavigatedEventArgs(Route OldRoute, Route NewRoute, IViewModel NewViewModel);

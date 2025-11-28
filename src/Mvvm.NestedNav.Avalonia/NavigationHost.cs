@@ -11,8 +11,8 @@ public class NavigationHost : ContentControl
     public static readonly StyledProperty<INavigator> NavigatorProperty = AvaloniaProperty.Register<NavigationHost, INavigator>(
         nameof(Navigator));
 
-    public static readonly StyledProperty<Screen> InitialScreenProperty = AvaloniaProperty.Register<NavigationHost, Screen>(
-        nameof(InitialScreen));
+    public static readonly StyledProperty<Route> InitialRouteProperty = AvaloniaProperty.Register<NavigationHost, Route>(
+        nameof(InitialRoute));
 
     public static readonly StyledProperty<IViewModelFactory> ViewModelFactoryProperty = AvaloniaProperty.Register<NavigationHost, IViewModelFactory>(
         nameof(ViewModelFactory));
@@ -23,12 +23,12 @@ public class NavigationHost : ContentControl
         set => SetValue(ViewModelFactoryProperty, value);
     }
 
-    private IScreenViewModel? _currentViewModel;
+    private IViewModel? _currentViewModel;
 
-    public static readonly DirectProperty<NavigationHost, IScreenViewModel> CurrentViewModelProperty = AvaloniaProperty.RegisterDirect<NavigationHost, IScreenViewModel>(
+    public static readonly DirectProperty<NavigationHost, IViewModel> CurrentViewModelProperty = AvaloniaProperty.RegisterDirect<NavigationHost, IViewModel>(
         nameof(CurrentViewModel), o => o.CurrentViewModel, (o, v) => o.CurrentViewModel = v);
 
-    public IScreenViewModel CurrentViewModel
+    public IViewModel CurrentViewModel
     {
         get => _currentViewModel ?? throw new InvalidOperationException("NavigationHost not initialized yet.");
         set => SetAndRaise(CurrentViewModelProperty, ref _currentViewModel!, value);
@@ -39,14 +39,14 @@ public class NavigationHost : ContentControl
         
     }
 
-    public NavigationHost(Screen initialScreen, IViewModelFactory viewModelFactory)
+    public NavigationHost(Route initialRoute, IViewModelFactory viewModelFactory)
         : this()
     {
-        InitialScreen = initialScreen;
+        InitialRoute = initialRoute;
         ViewModelFactory = viewModelFactory;
     }
 
-    private void SetCurrentViewModel(IScreenViewModel viewModel)
+    private void SetCurrentViewModel(IViewModel viewModel)
     {
         CurrentViewModel = viewModel;
         Dispatcher.UIThread.Post(() => Content = viewModel);
@@ -55,11 +55,11 @@ public class NavigationHost : ContentControl
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if (InitialScreen is null)
-            throw new InvalidOperationException("The InitialScreen has not been set on the navigation host.");
+        if (InitialRoute is null)
+            throw new InvalidOperationException("The " + nameof(InitialRoute) +" has not been set on the navigation host.");
         if (ViewModelFactory is null)
-            throw new InvalidOperationException("The ViewModelFactory has not been set on the navigation host.");
-        Navigator = new Navigator(ViewModelFactory, InitialScreen, parentNavigator: null);
+            throw new InvalidOperationException("The " + nameof(ViewModelFactory) + " has not been set on the navigation host.");
+        Navigator = new Navigator(ViewModelFactory, InitialRoute, parentNavigator: null);
         SetCurrentViewModel(Navigator.BackStack.CurrentViewModel());
         Navigator.Navigated += OnNavigated;
     }
@@ -82,9 +82,9 @@ public class NavigationHost : ContentControl
         get => GetValue(NavigatorProperty);
         set => SetValue(NavigatorProperty, value);
     }
-    public Screen InitialScreen
+    public Route InitialRoute
     {
-        get => GetValue(InitialScreenProperty);
-        set => SetValue(InitialScreenProperty, value);
+        get => GetValue(InitialRouteProperty);
+        set => SetValue(InitialRouteProperty, value);
     }
 }

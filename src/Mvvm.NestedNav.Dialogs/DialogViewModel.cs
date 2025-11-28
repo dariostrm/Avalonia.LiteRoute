@@ -6,7 +6,7 @@ using Mvvm.NestedNav.Exceptions;
 
 namespace Mvvm.NestedNav.Dialogs;
 
-public partial class DialogViewModel : ScreenViewModel, IDialogViewModel
+public partial class DialogViewModel : ViewModelBase, IDialogViewModel
 {
     [ObservableProperty] private string _title = "Dialog";
 
@@ -63,10 +63,10 @@ public abstract partial class DialogViewModel<TResult> : DialogViewModel, IDialo
         SetSecondaryAction(() => RequestClose(Result));
     }
 
-    public override void Initialize(INavigator navigator, Screen screen)
+    public override void Initialize(INavigator navigator, Route route)
     {
-        base.Initialize(navigator, screen);
-        if (screen is not DialogScreen<TResult> dialogScreen)
+        base.Initialize(navigator, route);
+        if (route is not DialogScreen<TResult> dialogScreen)
             throw new InvalidScreenException(nameof(DialogViewModel<TResult>));
         Title = dialogScreen.Title;
     }

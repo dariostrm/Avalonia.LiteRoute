@@ -5,7 +5,7 @@ using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
-using Mvvm.NestedNav.Avalonia.Samples.Screens;
+using Mvvm.NestedNav.Avalonia.Samples.Routes;
 using Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 using Mvvm.NestedNav.Avalonia.Samples.Views;
 
@@ -25,10 +25,10 @@ public partial class App : Application
         serviceCollection.AddSingleton<IViewModelFactory>(sp =>
         {
             var factory = new ViewModelFactory(sp);
-            factory.Register<HomeScreen, HomeViewModel>();
-            factory.Register<DetailsScreen, DetailsViewModel>();
-            factory.Register<ProfileScreen, ProfileViewModel>();
-            factory.Register<SettingsScreen, SettingsViewModel>();
+            factory.Register<HomeRoute, HomeViewModel>();
+            factory.Register<DetailsRoute, DetailsViewModel>();
+            factory.Register<ProfileRoute, ProfileViewModel>();
+            factory.Register<SettingsRoute, SettingsViewModel>();
             return factory;
         });
         serviceCollection.AddSingleton<MainViewModel>();

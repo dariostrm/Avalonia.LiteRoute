@@ -13,19 +13,19 @@ public class Navigator : INavigator
     public event EventHandler<NavigatingEventArgs>? Navigating;
     public event EventHandler<NavigatedEventArgs>? Navigated;
     
-    public Navigator(IViewModelFactory viewModelFactory, Screen initialScreen, INavigator? parentNavigator = null)
+    public Navigator(IViewModelFactory viewModelFactory, Route initialRoute, INavigator? parentNavigator = null)
     {
         _viewModelFactory = viewModelFactory;
         ParentNavigator = parentNavigator;
-        var initialEntry = CreateEntry(initialScreen);
+        var initialEntry = CreateEntry(initialRoute);
         BackStack = ImmutableStack.Create(initialEntry);
     }
 
     public virtual bool CanGoBack() => BackStack.Count() > 1;
 
-    public void OverrideBackStack(IEnumerable<Screen> screens)
+    public void OverrideBackStack(IEnumerable<Route> routes)
     {
-        var newBackStack = screens
+        var newBackStack = routes
             .Select(CreateEntry)
             .Aggregate(ImmutableStack<NavEntry>.Empty, (backstack, entry) => backstack.Push(entry));
         SetBackStack(newBackStack);
@@ -34,15 +34,15 @@ public class Navigator : INavigator
     private void SetBackStack(IImmutableStack<NavEntry> newBackStack)
     {
         var oldEntry = BackStack.CurrentEntry();
-        var oldScreen = oldEntry.Screen;
+        var oldRoute = oldEntry.Route;
         oldEntry.ViewModel.OnNavigatingFrom();
         var newEntry = newBackStack.CurrentEntry();
         CheckForClosingViewModels(BackStack, newBackStack);
-        Navigating?.Invoke(this, new NavigatingEventArgs(oldScreen, oldEntry.ViewModel, newEntry.Screen));
+        Navigating?.Invoke(this, new NavigatingEventArgs(oldRoute, oldEntry.ViewModel, newEntry.Route));
         BackStack = newBackStack;
         oldEntry.ViewModel.OnNavigatedFrom();
         newEntry.ViewModel.OnNavigatedTo();
-        Navigated?.Invoke(this, new NavigatedEventArgs(oldScreen, newEntry.Screen, newEntry.ViewModel));
+        Navigated?.Invoke(this, new NavigatedEventArgs(oldRoute, newEntry.Route, newEntry.ViewModel));
     }
     
     private void CheckForClosingViewModels(IImmutableStack<NavEntry> oldStack, IImmutableStack<NavEntry> newStack)
@@ -54,9 +54,9 @@ public class Navigator : INavigator
         }
     }
 
-    public void Navigate(Screen screen)
+    public void Navigate(Route route)
     {
-        var newBackStack = BackStack.Push(CreateEntry(screen));
+        var newBackStack = BackStack.Push(CreateEntry(route));
         SetBackStack(newBackStack);
     }
 
@@ -68,31 +68,31 @@ public class Navigator : INavigator
         SetBackStack(newBackStack);
     }
 
-    public void GoBackTo(Screen screen)
+    public void GoBackTo(Route route)
     {
-        if (!BackStack.Any(entry => entry.Screen.Equals(screen)))
+        if (!BackStack.Any(entry => entry.Route.Equals(route)))
             return;
         var newBackStack = BackStack;
-        while (!newBackStack.CurrentEntry().Screen.Equals(screen))
+        while (!newBackStack.CurrentEntry().Route.Equals(route))
         {
             newBackStack = newBackStack.Pop();
         }
         SetBackStack(newBackStack);
     }
 
-    public void ClearAndSet(Screen screen) => OverrideBackStack([screen]);
+    public void ClearAndSet(Route route) => OverrideBackStack([route]);
     
 
-    public void ReplaceCurrent(Screen screen)
+    public void ReplaceCurrent(Route route)
     {
         var newBackStack = BackStack.Pop();
-        newBackStack = newBackStack.Push(CreateEntry(screen));
+        newBackStack = newBackStack.Push(CreateEntry(route));
         SetBackStack(newBackStack);
     }
     
-    private NavEntry CreateEntry(Screen screen)
+    private NavEntry CreateEntry(Route route)
     {
-        var vm = _viewModelFactory.CreateViewModel(screen, this);
-        return new NavEntry(screen, vm);
+        var vm = _viewModelFactory.CreateViewModel(route, this);
+        return new NavEntry(route, vm);
     }
 }

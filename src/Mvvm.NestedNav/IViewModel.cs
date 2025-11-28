@@ -2,9 +2,9 @@ using System.ComponentModel;
 
 namespace Mvvm.NestedNav;
 
-public interface IScreenViewModel
+public interface IViewModel
 {
-    void Initialize(INavigator navigator, Screen screen);
+    void Initialize(INavigator navigator, Route route);
     
     void OnNavigatedTo();
     void OnNavigatingFrom();

@@ -1,3 +1,3 @@
 namespace Mvvm.NestedNav;
 
-public record NavEntry(Screen Screen, IScreenViewModel ViewModel);
+public record NavEntry(Route Route, IViewModel ViewModel);
