@@ -4,9 +4,9 @@ namespace Mvvm.NestedNav;
 
 public interface IViewModel
 {
-    void Initialize(INavigator navigator, Route route);
+    void OnInitialize(INavigator navigator);
     
-    void OnNavigatedTo();
-    void OnNavigatedFrom();
+    void OnActivate();
+    void OnMoveToBackground();
     void OnDestroy();
 }

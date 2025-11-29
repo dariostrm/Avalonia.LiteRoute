@@ -4,15 +4,9 @@ using Mvvm.NestedNav.Avalonia.Samples.Routes;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
-public partial class DetailsViewModel : ViewModelBase<DetailsRoute>
+public partial class DetailsViewModel(string message) : ViewModelBase
 {
-    [ObservableProperty] private string _message = "Details not yet loaded!";
-
-    public override void Initialize(INavigator navigator, DetailsRoute route)
-    {
-        base.Initialize(navigator, route);
-        Message = route.Message;
-    }
+    [ObservableProperty] private string _message = message;
     
     [RelayCommand]
     private void GoBack()

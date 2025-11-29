@@ -2,8 +2,7 @@
 
 namespace Mvvm.NestedNav;
 
-public abstract class ViewModelBase<TRoute> : ObservableValidator, IViewModel
-    where TRoute : Route
+public abstract class ViewModelBase : ObservableValidator, IViewModel
 {
     private INavigator? _navigator;
     public virtual INavigator Navigator
@@ -12,32 +11,14 @@ public abstract class ViewModelBase<TRoute> : ObservableValidator, IViewModel
         private set => _navigator = value;
     }
     
-    private TRoute? _route;
-    public virtual TRoute Route 
-    {
-        get => _route ?? throw new InvalidOperationException("The ViewModel has not been initialized yet.");
-        private set => _route = value;
-    }
-    
-    public virtual void Initialize(INavigator navigator, TRoute route)
+    public virtual void OnInitialize(INavigator navigator)
     {
         Navigator = navigator;
-        Route = route;
     }
 
-    public void Initialize(INavigator navigator, Route route)
-    {
-        if (route is not TRoute typedRoute)
-        {
-            throw new ArgumentException($"Invalid route type. Expected {typeof(TRoute).FullName}, but got {route.GetType().FullName}.");
-        }
-        
-        Initialize(navigator, typedRoute);
-    }
+    public virtual void OnActivate() {}
 
-    public virtual void OnNavigatedTo() {}
-
-    public virtual void OnNavigatedFrom() {}
+    public virtual void OnMoveToBackground() {}
     
     public virtual void OnDestroy() {}
 }

@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
@@ -21,16 +22,15 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddSingleton<HomeViewModel>();
-        serviceCollection.AddSingleton<IViewModelFactory>(sp =>
+        serviceCollection.AddSingleton<Func<Route, IViewModel>>(serviceProvider => route => route switch
         {
-            var factory = new ViewModelFactory(sp);
-            factory.Register<HomeRoute, HomeViewModel>();
-            factory.Register<DetailsRoute, DetailsViewModel>();
-            factory.Register<ProfileRoute, ProfileViewModel>();
-            factory.Register<SettingsRoute, SettingsViewModel>();
-            return factory;
+            HomeRoute => new HomeViewModel(),
+            DetailsRoute r => new DetailsViewModel(r.Message),
+            ProfileRoute => new ProfileViewModel(),
+            SettingsRoute => new SettingsViewModel(),
+            _ => throw new ArgumentException($"No ViewModel registered for route type {route.GetType().FullName}")
         });
+        serviceCollection.AddSingleton<IViewModelFactory, ViewModelFactory>();
         serviceCollection.AddSingleton<MainViewModel>();
         var serviceProvider = serviceCollection.BuildServiceProvider();
         

@@ -8,13 +8,13 @@ public record NavEntry(Route Route, IViewModel ViewModel)
 
     public void OnNavigatedTo()
     {
-        ViewModel.OnNavigatedTo();
+        ViewModel.OnActivate();
         SetLifecycleState(NavEntryLifecycleState.Active);
     }
     
     public void OnNavigatedFrom()
     {
-        ViewModel.OnNavigatedFrom();
+        ViewModel.OnMoveToBackground();
         SetLifecycleState(NavEntryLifecycleState.Inactive);
     }
     

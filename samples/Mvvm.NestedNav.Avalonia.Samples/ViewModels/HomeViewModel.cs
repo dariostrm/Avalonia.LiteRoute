@@ -4,15 +4,9 @@ using Mvvm.NestedNav.Avalonia.Samples.Routes;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
-public partial class HomeViewModel : ViewModelBase<HomeRoute>
+public partial class HomeViewModel : ViewModelBase
 {
-    [ObservableProperty] private string _greeting = "Home not yet loaded!";
-
-    public override void Initialize(INavigator navigator, HomeRoute route)
-    {
-        base.Initialize(navigator, route);
-        Greeting = "Welcome to home page!";
-    }
+    [ObservableProperty] private string _greeting = "Welcome to home page!";
 
     [RelayCommand]
     private void GoToDetails()

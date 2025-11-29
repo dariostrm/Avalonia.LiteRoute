@@ -4,7 +4,7 @@ using Mvvm.NestedNav.Avalonia.Samples.Routes;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
-public partial class SettingsViewModel : ViewModelBase<SettingsRoute>
+public partial class SettingsViewModel : ViewModelBase
 {
     [ObservableProperty] private string _greeting = "Welcome to settings page!";
 
