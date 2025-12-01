@@ -1,16 +1,16 @@
-
 using System.Collections.Immutable;
 
 namespace Mvvm.NestedNav;
 
 public class Navigator : INavigator
 {
-    protected IViewModelFactory ViewModelFactory { get; }
+    private IViewModelFactory ViewModelFactory { get; }
     
     public IImmutableStack<NavEntry> BackStack { get; private set; }
     public NavEntry CurrentEntry => BackStack.Peek();
     
     public event Action<IImmutableStack<NavEntry>>? BackStackChanged;
+    public event Action<NavEntry>? CurrentEntryChanged;
     
     public Navigator(IViewModelFactory viewModelFactory, Route initialRoute)
     {
@@ -19,7 +19,7 @@ public class Navigator : INavigator
         BackStack = ImmutableStack.Create(initialEntry);
     }
 
-    public virtual bool CanGoBack() => BackStack.Count() > 1;
+    public bool CanGoBack() => BackStack.Count() > 1;
 
     public void OverrideBackStack(IEnumerable<Route> routes)
     {
@@ -40,6 +40,7 @@ public class Navigator : INavigator
         DestroyRemovedEntries(BackStack, newBackStack);
         CurrentEntry.OnNavigatedTo();
         BackStackChanged?.Invoke(BackStack);
+        CurrentEntryChanged?.Invoke(CurrentEntry);
     }
     
     private void DestroyRemovedEntries(IImmutableStack<NavEntry> oldStack, IImmutableStack<NavEntry> newStack)

@@ -66,18 +66,18 @@ public class NavigationHost : ContentControl
             throw new InvalidOperationException("The " + nameof(ViewModelFactory) + " has not been set on the navigation host.");
         Navigator = new Navigator(ViewModelFactory, InitialRoute);
         SetCurrentViewModel(Navigator.CurrentEntry.ViewModel);
-        Navigator.BackStackChanged += OnBackStackChanged;
+        Navigator.CurrentEntryChanged += OnCurrentEntryChanged;
     }
 
-    private void OnBackStackChanged(IImmutableStack<NavEntry> backStack)
+    private void OnCurrentEntryChanged(NavEntry newEntry)
     {
-        var newViewModel = backStack.Peek().ViewModel;
+        var newViewModel = newEntry.ViewModel;
         SetCurrentViewModel(newViewModel);
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        Navigator.BackStackChanged -= OnBackStackChanged;
+        Navigator.CurrentEntryChanged -= OnCurrentEntryChanged;
         base.OnDetachedFromLogicalTree(e);
     }
 

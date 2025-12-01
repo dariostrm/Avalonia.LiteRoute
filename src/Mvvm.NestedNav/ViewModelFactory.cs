@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Mvvm.NestedNav;
 
 public class ViewModelFactory(Func<Route, IViewModel> viewModelResolver) : IViewModelFactory

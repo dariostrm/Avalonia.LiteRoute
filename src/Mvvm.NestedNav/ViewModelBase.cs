@@ -2,7 +2,7 @@
 
 namespace Mvvm.NestedNav;
 
-public abstract class ViewModelBase() : ObservableValidator, IViewModel
+public abstract class ViewModelBase : ObservableValidator, IViewModel
 {
     private INavigator? _navigator;
     

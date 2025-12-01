@@ -16,4 +16,5 @@ public interface INavigator
     void ReplaceCurrent(Route route);
     
     event Action<IImmutableStack<NavEntry>>? BackStackChanged;
+    event Action<NavEntry>? CurrentEntryChanged; 
 }
