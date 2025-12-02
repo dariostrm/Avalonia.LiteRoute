@@ -7,19 +7,26 @@
              xmlns:bookTracker="clr-namespace:BookTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BookTracker.Views.MainView"
-             x:DataType="vm:MainViewModel">
+             x:DataType="vm:MainViewModel"
+             HorizontalContentAlignment="Stretch"
+             HorizontalAlignment="Stretch">
   <Design.DataContext>
     <!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:MainViewModel />
   </Design.DataContext>
 
-    <TabControl>
+    <TabControl TabStripPlacement="Bottom">
+        <TabControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <UniformGrid Columns="{Binding $parent[TabControl].Items.Count}"/>
+            </ItemsPanelTemplate>
+        </TabControl.ItemsPanel>
         <TabItem>
             <TabItem.Header>
-                <StackPanel Spacing="5">
+                <StackPanel Spacing="5" Margin="0 10">
                     <LucideIcon Kind="Library"/>
-                    <TextBlock Text="Books"/>
+                    <TextBlock Text="Books" HorizontalAlignment="Center"/>
                 </StackPanel>
             </TabItem.Header>
             <TabItem.Content>
@@ -34,7 +41,7 @@
             <TabItem.Header>
                 <StackPanel Spacing="5">
                     <LucideIcon Kind="Settings"/>
-                    <TextBlock Text="Settings"/>
+                    <TextBlock Text="Settings" HorizontalAlignment="Center"/>
                 </StackPanel>
             </TabItem.Header>
             <TabItem.Content>
@@ -49,7 +56,7 @@
             <TabItem.Header>
                 <StackPanel Spacing="5">
                     <LucideIcon Kind="Info"/>
-                    <TextBlock Text="About"/>
+                    <TextBlock Text="About" HorizontalAlignment="Center"/>
                 </StackPanel>
             </TabItem.Header>
             <TabItem.Content>

@@ -11,6 +11,6 @@
     </Application.DataTemplates>
 
     <Application.Styles>
-        <shadUi:ShadTheme/>
+        <FluentTheme/>
     </Application.Styles>
 </Application>
