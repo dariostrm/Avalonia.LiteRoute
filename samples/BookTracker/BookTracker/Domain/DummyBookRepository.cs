@@ -35,7 +35,7 @@ public class DummyBookRepository : IBookRepository
     public async Task<Book?> GetBookAsync(Guid id)
     {
         // Simulate async operation
-        await Task.Delay(100);
+        await Task.Delay(500);
         
         return _books.Find(book => book.Id == id);
     }

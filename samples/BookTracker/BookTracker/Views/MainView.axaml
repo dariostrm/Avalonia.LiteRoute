@@ -16,7 +16,7 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
-    <TabControl TabStripPlacement="Bottom">
+    <TabControl TabStripPlacement="Bottom" Padding="0">
         <TabControl.ItemsPanel>
             <ItemsPanelTemplate>
                 <UniformGrid Columns="{Binding $parent[TabControl].Items.Count}"/>

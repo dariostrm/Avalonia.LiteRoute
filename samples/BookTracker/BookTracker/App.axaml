@@ -11,6 +11,7 @@
     </Application.DataTemplates>
 
     <Application.Styles>
-        <FluentTheme/>
+        <FluentTheme>
+        </FluentTheme>
     </Application.Styles>
 </Application>

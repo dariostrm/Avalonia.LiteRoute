@@ -1,3 +1,4 @@
+using System;
 using Mvvm.NestedNav;
 
 namespace BookTracker;
@@ -6,3 +7,6 @@ namespace BookTracker;
 public record BooksTab() : Route;
 public record SettingsTab() : Route;
 public record AboutTab() : Route;
+
+//BooksTab routes
+public record BookRoute(Guid BookId) : Route;

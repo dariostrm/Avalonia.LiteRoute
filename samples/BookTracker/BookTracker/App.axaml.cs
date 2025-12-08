@@ -32,6 +32,10 @@ public partial class App : Application
                 bookRepository: serviceProvider.GetRequiredService<IBookRepository>()
             ),
             SettingsTab => new SettingsViewModel(),
+            BookRoute r => new BookViewModel(
+                bookId: r.BookId, 
+                bookRepository: serviceProvider.GetRequiredService<IBookRepository>()
+            ),
             _ => throw new ArgumentOutOfRangeException(nameof(route))
         });
         serviceCollection.AddSingleton<IViewModelFactory, ViewModelFactory>();

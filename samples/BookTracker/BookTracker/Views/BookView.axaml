@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:BookTracker.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BookTracker.Views.BookView"
+             x:DataType="viewModels:BookViewModel">
+
+    <Grid RowDefinitions="Auto, *">
+        
+        <!-- Top bar -->
+        <StackPanel Orientation="Horizontal"
+                    Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+                    Spacing="10">
+            <Button Command="{Binding GoBackCommand}" Background="Transparent"
+                    Margin="10">
+                <LucideIcon Kind="ArrowLeft" Foreground="White"/>
+            </Button>
+            <TextBlock Text="{Binding Book.Title, FallbackValue=''}"
+                       FontSize="20"
+                       Foreground="White"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+        
+        <Grid Grid.Row="1"
+              RowDefinitions="*, 3*">
+            
+            <Border Background="{DynamicResource ButtonBackgroundPointerOver}">
+                <LucideIcon Kind="Book"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Size="50"/>
+            </Border>
+            
+            <StackPanel Grid.Row="1" Spacing="5">
+                
+                <StackPanel Margin="10">
+                    <TextBlock Text="Title" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Book.Title, FallbackValue=''}"/>
+                </StackPanel>
+                
+                <StackPanel Margin="10">
+                    <TextBlock Text="Author" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Book.Author, FallbackValue=''}"/>
+                </StackPanel>
+                
+                <StackPanel Margin="10">
+                    <TextBlock Text="Pages" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Book.Pages, FallbackValue=''}"/>
+                </StackPanel>
+                
+            </StackPanel>
+            
+            <!-- This is shown if loading -->
+            <Grid IsVisible="{Binding Loaded, Converter={x:Static BoolConverters.Not}}"
+                  Background="Black"
+                  Grid.Row="0"
+                  Grid.RowSpan="2"
+                  Opacity="0.7">
+                <ProgressBar IsIndeterminate="True"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"/>
+            </Grid>
+            
+        </Grid>
+        
+    </Grid>
+    
+</UserControl>

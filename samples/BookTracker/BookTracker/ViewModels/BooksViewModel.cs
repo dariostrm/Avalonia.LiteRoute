@@ -35,4 +35,11 @@ public partial class BooksViewModel : ViewModelBase
     {
         Books = new ObservableCollection<Book>(newBooks);
     }
+    
+    [RelayCommand]
+    private void SelectBook(Guid bookId)
+    {
+        // In this case passing the whole Book object through the route would also be fine
+        Navigator.Navigate(new BookRoute(bookId));
+    }
 }
