@@ -6,7 +6,7 @@ A lightweight C#/Avalonia navigation library built to work with the CommunityToo
 - Navigation between ViewModels (stack-based)
 - Easy parameterized navigation
 - First-class support for Dependency Injection (easy to mix navigation parameters with services in constructors)
-- Automatically handles the physical back button
+- Handles the physical back button
 - Leverages the built-in TabControl for tab navigation, as well as the ViewLocator for View/ViewModel resolution
 - Lifecycle hooks for navigation entries
 - Simple and intuitive API
@@ -57,6 +57,22 @@ var viewModelFactory = serviceProvider.GetRequiredService<IViewModelFactory>();
 Resources.Add("ViewModelFactory", viewModelFactory);
 ```
 
+<details>
+  <summary>If you're not using dependency injection:</summary>
+
+```csharp
+var viewModelFactory = new ViewModelFactory(viewModelResolver: route => route switch
+{
+    AboutTab => new AboutViewModel(),
+    ...
+    _ => throw new ArgumentOutOfRangeException(nameof(route))
+});
+Resources.Add("ViewModelFactory", viewModelFactory);
+```
+</details>
+
+---
+
 You can now use the `NavigationHost` control wherever you want to have navigation capabilities.
 Each `NavigationHost` has its own navigation stack and an initial route. 
 For basic usage, you can just define a single `NavigationHost` in your `MainView.axaml`:
@@ -67,6 +83,16 @@ For basic usage, you can just define a single `NavigationHost` in your `MainView
     </navStack:NavigationHost.InitialRoute>
 </navStack:NavigationHost>
 ```
+
+> [!NOTE]
+> The `NavigationHost` needs access to the `IViewModelFactory`. 
+> By default, it will look for it in the application resources, which is why you need the `Resources.Add("ViewModelFactory", viewModelFactory);` line in the previous step.
+> but you can also inject or create a ViewModelFactory in your ViewModel and set it explicitly like this:
+> ```xml
+> <navStack:NavigationHost ViewModelFactory="{Binding ViewModelFactory}">
+> ```
+
+---
 
 Finally, just inherit from `ViewModelBase` in your ViewModels to get access to the `Navigator` and its methods:
 `ViewModelBase` already inherits from `ObservableValidator` from the CommunityToolkit.Mvvm framework, so you can also use all its features in your ViewModels.
@@ -95,6 +121,7 @@ public partial class BookViewModel : ViewModelBase
 ```
 For other navigation methods, check out the `INavigator` interface [here](./src/Mvvm.NavStack/INavigator.cs).
 
+---
 ## Tab Navigation
 For tab navigation, simply use the `TabControl` provided by Avalonia and define a `NavigationHost` for each tab.
 ```xml
