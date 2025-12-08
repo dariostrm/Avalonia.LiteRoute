@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
 
@@ -8,6 +9,8 @@ namespace Mvvm.NestedNav.Avalonia;
 
 public class NavigationHost : ContentControl
 {
+    private TopLevel? _topLevel;
+    
     public static readonly StyledProperty<INavigator> NavigatorProperty = AvaloniaProperty.Register<NavigationHost, INavigator>(
         nameof(Navigator));
 
@@ -64,9 +67,21 @@ public class NavigationHost : ContentControl
             throw new InvalidOperationException("The " + nameof(InitialRoute) +" has not been set on the navigation host.");
         if (ViewModelFactory is null)
             throw new InvalidOperationException("The " + nameof(ViewModelFactory) + " has not been set on the navigation host.");
+        _topLevel = TopLevel.GetTopLevel(this);
+        if (_topLevel != null)
+            _topLevel.BackRequested += OnBackRequested;
         Navigator = new Navigator(ViewModelFactory, InitialRoute);
         SetCurrentViewModel(Navigator.CurrentEntry.ViewModel);
         Navigator.CurrentEntryChanged += OnCurrentEntryChanged;
+    }
+
+    private void OnBackRequested(object? sender, RoutedEventArgs e)
+    {
+        if (Navigator.CanGoBack())
+        {
+            Navigator.GoBack();
+            e.Handled = true;
+        }
     }
 
     private void OnCurrentEntryChanged(NavEntry newEntry)
@@ -78,6 +93,8 @@ public class NavigationHost : ContentControl
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         Navigator.CurrentEntryChanged -= OnCurrentEntryChanged;
+        if (_topLevel != null)
+            _topLevel.BackRequested -= OnBackRequested;
         base.OnDetachedFromLogicalTree(e);
     }
 
