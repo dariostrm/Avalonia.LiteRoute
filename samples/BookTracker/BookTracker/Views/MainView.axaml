@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:BookTracker.ViewModels"
              xmlns:bookTracker="clr-namespace:BookTracker"
-             xmlns:navStack="clr-namespace:Avalonia.Mvvm.NavStack;assembly=Avalonia.Mvvm.NavStack"
+             xmlns:liteRoute="clr-namespace:Avalonia.LiteRoute;assembly=Avalonia.LiteRoute"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BookTracker.Views.MainView"
              x:DataType="vm:MainViewModel"
@@ -30,11 +30,11 @@
                 </StackPanel>
             </TabItem.Header>
             <TabItem.Content>
-                <navStack:NavigationHost>
-                    <navStack:NavigationHost.InitialRoute>
+                <liteRoute:NavigationHost>
+                    <liteRoute:NavigationHost.InitialRoute>
                         <bookTracker:BooksTab/>
-                    </navStack:NavigationHost.InitialRoute>
-                </navStack:NavigationHost>
+                    </liteRoute:NavigationHost.InitialRoute>
+                </liteRoute:NavigationHost>
             </TabItem.Content>
         </TabItem>
         <TabItem>
@@ -45,11 +45,11 @@
                 </StackPanel>
             </TabItem.Header>
             <TabItem.Content>
-                <navStack:NavigationHost>
-                    <navStack:NavigationHost.InitialRoute>
+                <liteRoute:NavigationHost>
+                    <liteRoute:NavigationHost.InitialRoute>
                         <bookTracker:SettingsTab/>
-                    </navStack:NavigationHost.InitialRoute>
-                </navStack:NavigationHost>
+                    </liteRoute:NavigationHost.InitialRoute>
+                </liteRoute:NavigationHost>
             </TabItem.Content>
         </TabItem>
         <TabItem>
@@ -60,11 +60,11 @@
                 </StackPanel>
             </TabItem.Header>
             <TabItem.Content>
-                <navStack:NavigationHost>
-                    <navStack:NavigationHost.InitialRoute>
+                <liteRoute:NavigationHost>
+                    <liteRoute:NavigationHost.InitialRoute>
                         <bookTracker:AboutTab/>
-                    </navStack:NavigationHost.InitialRoute>
-                </navStack:NavigationHost>
+                    </liteRoute:NavigationHost.InitialRoute>
+                </liteRoute:NavigationHost>
             </TabItem.Content>
         </TabItem>
     </TabControl>

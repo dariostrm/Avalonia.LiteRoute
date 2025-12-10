@@ -4,12 +4,12 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using Avalonia.LiteRoute;
 using Avalonia.Markup.Xaml;
 using BookTracker.Domain;
 using BookTracker.ViewModels;
 using BookTracker.Views;
 using Microsoft.Extensions.DependencyInjection;
-using Mvvm.NavStack;
 
 namespace BookTracker;
 

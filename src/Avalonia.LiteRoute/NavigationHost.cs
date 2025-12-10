@@ -1,14 +1,10 @@
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
-using Mvvm.NavStack;
 
-namespace Avalonia.Mvvm.NavStack;
-
-
+namespace Avalonia.LiteRoute;
 
 public class NavigationHost : ContentControl
 {

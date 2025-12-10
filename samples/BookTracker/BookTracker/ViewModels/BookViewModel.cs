@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using Avalonia.LiteRoute;
 using BookTracker.Domain;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mvvm.NavStack;
 
 namespace BookTracker.ViewModels;
 

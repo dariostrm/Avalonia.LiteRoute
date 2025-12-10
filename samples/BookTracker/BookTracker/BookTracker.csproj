@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Avalonia.LiteRoute\Avalonia.LiteRoute.csproj" />
     <ProjectReference Include="..\..\..\src\Avalonia.Mvvm.NavStack\Avalonia.Mvvm.NavStack.csproj" />
-    <ProjectReference Include="..\..\..\src\Mvvm.NavStack\Mvvm.NavStack.csproj" />
   </ItemGroup>
 </Project>

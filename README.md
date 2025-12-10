@@ -1,4 +1,4 @@
-# Avalonia.Mvvm.NavStack
+# Avalonia.LiteRoute
 A lightweight C#/Avalonia navigation library built to work with the CommunityToolkit.Mvvm framework.
 
 ## Features
@@ -78,11 +78,11 @@ You can now use the `NavigationHost` control wherever you want to have navigatio
 Each `NavigationHost` has its own navigation stack and an initial route. 
 For basic usage, you can just define a single `NavigationHost` in your `MainView.axaml`:
 ```xml
- <navStack:NavigationHost>
-    <navStack:NavigationHost.InitialRoute>
+ <liteRoute:NavigationHost>
+    <liteRoute:NavigationHost.InitialRoute>
         <bookTracker:BooksTab/>
-    </navStack:NavigationHost.InitialRoute>
-</navStack:NavigationHost>
+    </liteRoute:NavigationHost.InitialRoute>
+</liteRoute:NavigationHost>
 ```
 
 > [!NOTE]
@@ -90,7 +90,7 @@ For basic usage, you can just define a single `NavigationHost` in your `MainView
 > By default, it will look for it in the application resources, which is why you need the `Resources.Add("ViewModelFactory", viewModelFactory);` line in the previous step.
 > but you can also inject or create a ViewModelFactory in your ViewModel and set it explicitly like this:
 > ```xml
-> <navStack:NavigationHost ViewModelFactory="{Binding ViewModelFactory}">
+> <liteRoute:NavigationHost ViewModelFactory="{Binding ViewModelFactory}">
 > ```
 
 ---
@@ -128,25 +128,25 @@ For tab navigation, simply use the `TabControl` provided by Avalonia and define 
 ```xml
 <TabControl>
     <TabItem Header="Books">
-        <navStack:NavigationHost>
-            <navStack:NavigationHost.InitialRoute>
+        <liteRoute:NavigationHost>
+            <liteRoute:NavigationHost.InitialRoute>
                 <bookTracker:BooksTab/>
-            </navStack:NavigationHost.InitialRoute>
-        </navStack:NavigationHost>
+            </liteRoute:NavigationHost.InitialRoute>
+        </liteRoute:NavigationHost>
     </TabItem>
     <TabItem Header="Settings">
-        <navStack:NavigationHost>
-            <navStack:NavigationHost.InitialRoute>
+        <liteRoute:NavigationHost>
+            <liteRoute:NavigationHost.InitialRoute>
                 <bookTracker:SettingsTab/>
-            </navStack:NavigationHost.InitialRoute>
-        </navStack:NavigationHost>
+            </liteRoute:NavigationHost.InitialRoute>
+        </liteRoute:NavigationHost>
     </TabItem>
     <TabItem Header="About">
-        <navStack:NavigationHost>
-            <navStack:NavigationHost.InitialRoute>
+        <liteRoute:NavigationHost>
+            <liteRoute:NavigationHost.InitialRoute>
                 <bookTracker:AboutTab/>
-            </navStack:NavigationHost.InitialRoute>
-        </navStack:NavigationHost>
+            </liteRoute:NavigationHost.InitialRoute>
+        </liteRoute:NavigationHost>
     </TabItem>
 </TabControl>
 ```

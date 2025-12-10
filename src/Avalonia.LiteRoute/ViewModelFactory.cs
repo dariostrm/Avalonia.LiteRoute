@@ -1,4 +1,4 @@
-namespace Mvvm.NavStack;
+namespace Avalonia.LiteRoute;
 
 public class ViewModelFactory(Func<Route, IViewModel> viewModelResolver) : IViewModelFactory
 {

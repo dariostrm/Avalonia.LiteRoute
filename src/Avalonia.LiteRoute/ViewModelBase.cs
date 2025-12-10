@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Mvvm.NavStack;
+namespace Avalonia.LiteRoute;
 
 public abstract class ViewModelBase : ObservableValidator, IViewModel
 {

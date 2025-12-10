@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 
-namespace Mvvm.NavStack;
+namespace Avalonia.LiteRoute;
 
 public class Navigator : INavigator
 {

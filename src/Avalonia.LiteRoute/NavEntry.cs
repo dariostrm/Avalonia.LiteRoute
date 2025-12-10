@@ -1,4 +1,4 @@
-namespace Mvvm.NavStack;
+namespace Avalonia.LiteRoute;
 
 public record NavEntry(Route Route, IViewModel ViewModel)
 {

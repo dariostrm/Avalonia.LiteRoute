@@ -1,11 +1,9 @@
-
-
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace Avalonia.Mvvm.NavStack;
+namespace Avalonia.LiteRoute;
 
 public class ScaleTransition : IPageTransition
 {
