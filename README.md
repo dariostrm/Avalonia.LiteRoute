@@ -1,5 +1,26 @@
-# Avalonia.LiteRoute
-A lightweight C#/Avalonia navigation library built to work with the CommunityToolkit.Mvvm framework.
+<div align="center">
+
+  <img src="icon.png" alt="LiteRoute Logo" width="128" height="128" />
+
+  <h1>LiteRoute.Avalonia</h1>
+
+  <p>
+    <strong>A lightweight C#/Avalonia navigation library built to work with the CommunityToolkit.Mvvm framework.</strong>
+  </p>
+
+  <p>
+    <a href="https://www.nuget.org/packages/LiteRoute.Avalonia">
+      <img src="https://img.shields.io/nuget/v/LiteRoute.Avalonia.svg?style=flat-square" alt="NuGet Version" />
+    </a>
+    <a href="https://www.nuget.org/packages/LiteRoute.Avalonia">
+      <img src="https://img.shields.io/nuget/dt/LiteRoute.Avalonia.svg?style=flat-square" alt="Downloads" />
+    </a>
+    <a href="LICENSE">
+      <img src="https://img.shields.io/github/license/dariostrm/Avalonia.LiteRoute?style=flat-square" alt="License" />
+    </a>
+  </p>
+
+</div>
 
 ## Features
 
@@ -18,7 +39,7 @@ For the whole example, check out the [BookTracker sample app](./samples/BookTrac
 
 Install the NuGet package:
 ```bash
-# The package has not been published yet
+dotnet add package LiteRoute.Avalonia
 ```
 
 Define a route for the ViewModels you want to navigate to (for example in a `Routes.cs` file)
